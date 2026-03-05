@@ -8,6 +8,10 @@ import postgres from './shared/config/postgres.js';
 import rabbitmq from './shared/config/rabbitmq.js';
 import errorHandler from './shared/middlewares/errorHandler.js';
 import ResponseFormatter from './shared/utils/responseFormatter.js';
+import cookieParser from 'cookie-parser';
+
+// Routers
+import authRouter from "./services/auth/routes/authRouter.js"
 
 const app = express();
 
@@ -16,6 +20,7 @@ app.use(cors({
     origin: true,
     credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -69,10 +74,11 @@ app.get('/', (req, res) => {
     )
 });
 
+app.use("/api/auth", authRouter);
+
 /**
  * 404 handler
  */
-
 app.use((req, res) => {
     res.status(404).json(ResponseFormatter.error("Endpoint not found", 404));
 })
